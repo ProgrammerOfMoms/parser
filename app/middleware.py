@@ -1,18 +1,19 @@
+import logging
 import random
 import string
-import logging
 import time
-from typing import Callable, TypeAlias
-from fastapi import Request, Response
+from typing import Any, Awaitable, Callable, TypeAlias
 
+from fastapi import Request
 
 logger = logging.getLogger(__name__)
 
-MiddlewareType: TypeAlias = Callable[[Request, Callable | None], Response]
+MiddlewareType: TypeAlias = Callable[[Request, Callable | None],
+                                     Awaitable[Any]]
 
 
 async def log_requests(request: Request,
-                       call_next: MiddlewareType) -> Response:
+                       call_next: MiddlewareType) -> Awaitable[Any]:
     """Промежуточный слой для логгирование запроса."""
     idem = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
     logger.info(f"REQUEST START rid={idem} "

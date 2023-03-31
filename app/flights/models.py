@@ -1,5 +1,6 @@
+from sqlalchemy import Column, Date, Integer, String
+
 from app.db import Base
-from sqlalchemy import Column, Integer, String, Date
 
 
 class Flight(Base):

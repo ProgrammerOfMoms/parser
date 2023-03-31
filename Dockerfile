@@ -17,7 +17,8 @@ RUN apt-get update && apt-get install -y gcc libffi-dev musl-dev libpq-dev
 RUN pip install poetry==1.4.1
 
 COPY pyproject.toml poetry.lock ./
-RUN poetry export -f requirements.txt | pip install -r /dev/stdin
+RUN poetry export --dev -f requirements.txt | pip install -r /dev/stdin
 
-COPY ./ ./
+COPY . .
+
 RUN poetry build

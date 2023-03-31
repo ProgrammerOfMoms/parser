@@ -4,6 +4,7 @@
 .vscode
 __pycache__
 .pytest_cache
+.env
 htmlcov
 dist
 site
@@ -24,4 +25,9 @@ pgadmin
 .mypy_cache
 .venv
 celerybeat-schedule
-logs
+app/files/In
+app/files/Ok
+app/files/Err
+app/files/Out
+tests/files
+*.log

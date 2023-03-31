@@ -1,6 +1,7 @@
-from functools import wraps
 import logging
+import logging.config
 import os
+from functools import wraps
 from typing import Callable
 
 from app.config import settings
@@ -17,7 +18,7 @@ LOGGING = {
     },
     "handlers": {
         "file": {
-            "level": "DEBUG" if settings.DEBUG else "WARNING",
+            "level": settings.LOG_LEVEL,
             "class": "logging.FileHandler",
             "filename": os.path.join(BASE_DIR, "logs/logs.log"),
             "mode": "w",
@@ -32,14 +33,14 @@ LOGGING = {
     },
     "loggers": {
         "root": {
-            "handlers": ["file", "stdout"] if settings.DEBUG else ["file"],
+            "handlers": ["file", "stdout"],
             "level": "DEBUG" if settings.DEBUG else "WARNING",
             "propagate": False,
         },
         "sqlalchemy.engine": {
             "propagate": False,
-            "handlers": ["file", "stdout"] if settings.DEBUG else ["file"],
-            "level": "INFO" if settings.DEBUG else "WARNING",
+            "handlers": ["file", "stdout"],
+            "level": settings.LOG_LEVEL,
         }
     }
 }
@@ -57,7 +58,12 @@ def logged(func) -> Callable:
         logger = logging.getLogger(func.__module__)
         logger.info(f"START METHOD {func.__name__} with args {args} and "
                     f"kwargs {kwargs}")
-        result = func(*args, **kwargs)
-        logger.info(f"END METHOD {func.__name__}, result {result}")
+        try:
+            result = func(*args, **kwargs)
+        except Exception:
+            logger.info(f"END METHOD {func.__name__}")
+            raise
+        else:
+            logger.info(f"END METHOD {func.__name__}, result {result}")
         return result
     return wrapper

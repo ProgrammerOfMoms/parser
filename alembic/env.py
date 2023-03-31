@@ -1,19 +1,18 @@
-from os import getenv
 from logging.config import fileConfig
+from os import getenv
 
+from sqlalchemy import engine_from_config, pool
+
+from alembic import context
 from app.db import Base
 from app.flights.models import *
-
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-from alembic import context
-
 
 POSTGRES_USER = getenv("POSTGRES_USER")
 POSTGRES_PASSWORD = getenv("POSTGRES_PASSWORD")
 POSTGRES_HOST = getenv("POSTGRES_HOST")
 POSTGRES_PORT = getenv("POSTGRES_PORT")
-DATABASE_URL = f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}"
+DATABASE_URL = (f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}"
+                f"@{POSTGRES_HOST}:{POSTGRES_PORT}")
 
 
 # this is the Alembic Config object, which provides

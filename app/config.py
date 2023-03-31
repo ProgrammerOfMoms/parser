@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     CELERY_RESULT_BACKEND: str
 
     DEBUG: bool
+    LOG_LEVEL: str
+
+    TASK_GENERATE_FILE_SEC: int
+    TASK_PROCESS_INCOMING_FILES_SEC: int
 
     class Config:
         env_file = "../.env"
