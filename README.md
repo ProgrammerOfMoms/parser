@@ -48,6 +48,9 @@
 3. Заполнить файлик .env в корне или переименовать test_env в .env
 4. Запустить контейнер docker compose up -d --build
 
+### Запуск тестов
+docker compose exec parser pytest
+
 ## Swagger документация
 Доступна по адресу: localhost:8000/docs
 
@@ -59,4 +62,4 @@
 ## Дополнительно
 При состоянии переменной окружения DEBUG = True, поднимается дополнительная задача в Celery, которая раз в TASK_GENERATE_FILE_SEC генерирует новый входящий файл.
 
-Если DEBUG = False (по умолчанию), то поднимается только задача обработки входящих файлов раз в TASK_PROCESS_INCOMING_FILES_SEC
+Если DEBUG = False (по умолчанию), то поднимается только задача обработки входящих файлов раз в TASK_PROCESS_INCOMING_FILES_SEC секунд.
