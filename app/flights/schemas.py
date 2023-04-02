@@ -58,6 +58,19 @@ class FlightIn(FlightBase):
                              "от 01-01-1970 до текущей даты.")
         return file_name
 
+    @validator("depdate", pre=True)
+    def validate_bdate(cls, depdate: str | date | None) -> date:
+        """Валидация даты рождения"""
+        if not isinstance(depdate, (str, date)):
+            raise ValueError
+        if isinstance(depdate, date):
+            return depdate
+        try:
+            depdate = datetime.strptime(depdate.lower(), "%Y%m%d")
+        except ValueError:
+            depdate = datetime.strptime(depdate, DEFAULT_DATE_FORMAT)
+        return depdate.date()
+
 
 class FlightOut(FlightIn):
     """Исходящая схема таблицы flights"""
