@@ -1,5 +1,6 @@
 """Модуль с тестами задач Celery модуля flights"""
 
+from datetime import date
 import json
 import os
 import re
@@ -7,11 +8,13 @@ import shutil
 from pathlib import Path
 from unittest.mock import MagicMock
 
-from pytest import MonkeyPatch
+from pytest import MonkeyPatch, Session
+from sqlalchemy import select
 from app.flights.bl.helpers import get_flights_from_files
+from app.flights.models import Flight
 
 from app.flights.schemas import FILE_NAME_PATTERN
-from app.flights.tasks import generate_file, process_incoming_flight_files, save_flights_to_json_files
+from app.flights.tasks import generate_file, process_incoming_flight_files, save_flights_to_db, save_flights_to_json_files
 from tests.helpers import BASE_DIR, generate_folders, wait_subtasks
 
 
@@ -120,11 +123,11 @@ class TestFileContent:
         file_name = "20221020_1234_OK.csv"
         test_file = test_folder / file_name
         shutil.copyfile(test_file, in_folder / file_name)
-        
+
         root_folder = in_folder.parent.absolute()
         out_folder = root_folder / "Out"
 
-        flights, _ = get_flights_from_files([str(test_file)])
+        flights, _ = get_flights_from_files([str(in_folder / file_name)])
         flights_dict = [flight.json() for flight in flights]
         save_flights_to_json_files(flights_dict, str(out_folder))
 
@@ -166,3 +169,31 @@ class TestFileContent:
             ]
         }
         assert test_data == content
+
+
+class TestFileDbSave:
+    """Тестирование сохранения в БД данных о файле"""
+
+    @generate_folders
+    def test_save_flights_to_db(self,
+                                session: Session,
+                                monkeypatch: MonkeyPatch) -> None:
+        """Тест сохранения данных в БД"""
+        in_folder = Path(BASE_DIR) / "files" / "In"
+        test_folder = Path(BASE_DIR) / "incoming_files"
+        file_name = "20221020_1234_OK.csv"
+        test_file = test_folder / file_name
+        shutil.copyfile(test_file, in_folder / file_name)
+        monkeypatch.setattr("app.flights.tasks.SessionLocal", lambda: session)
+
+        flights, _ = get_flights_from_files([str(in_folder / file_name)])
+        flights_dict = [flight.json() for flight in flights]
+
+        save_flights_to_db(flights_dict)
+        db_flights = list(session.execute(select(Flight)).scalars())
+        assert len(db_flights) == 1
+        db_flight: Flight = db_flights[0]
+        assert db_flight.flt == 1234
+        assert db_flight.file_name == file_name
+        assert db_flight.dep == "OK"
+        assert db_flight.depdate == date(2022, 10, 20)    
