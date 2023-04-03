@@ -1,4 +1,5 @@
 from datetime import date, datetime
+import json
 import os
 from typing import TypeVar, Type
 
@@ -70,6 +71,21 @@ class FlightIn(FlightBase):
         except ValueError:
             depdate = datetime.strptime(depdate, DEFAULT_DATE_FORMAT)
         return depdate.date()
+
+    def to_json(self,
+                exclude: set[str] | None = None,
+                replace: dict[str, str] | None = None) -> str:
+        """
+        Кастомный метод приведения объекта к JSON строке
+        """
+        json_str = self.json(exclude=exclude)
+        if replace is None:
+            return json_str
+        dict_obj = json.loads(json_str)
+        for old_key, new_key in replace.items():
+            if old_key in dict_obj:
+                dict_obj[new_key] = dict_obj.pop(old_key)
+        return json.dumps(dict_obj)
 
 
 class FlightOut(FlightIn):

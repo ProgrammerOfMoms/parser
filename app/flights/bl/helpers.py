@@ -77,7 +77,8 @@ def create_json_files_by_flights(flights: list[FlightFullIn],
         output_file_path = folder_path / output_file_name
         with open(output_file_path, "w",
                   encoding="utf-8") as output_file:
-            output_file.write(flight.json(exclude={"file_name"}))
+            output_file.write(flight.to_json(exclude={"file_name"},
+                                             replace={"depdate": "date"}))
 
 
 def get_flights_from_files(incoming_files: list[str]) -> FlightsFileMap:
