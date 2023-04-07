@@ -1,15 +1,56 @@
 from typing import Generator
+from fastapi import FastAPI
 
 import pytest
+from celery import Celery, registry
 from fastapi.testclient import TestClient
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session
 from sqlalchemy_utils import database_exists, create_database, drop_database
+from app.common.tasks import DatabaseTask
 
 from app.main import app as fastapi_app
-from app.db import Base
+from app.db import Base, SessionLocal
 from app.dependencies import get_db
 from app.flights.models import *
+
+
+@pytest.fixture(scope='session')
+def celery_config():
+    db_url = ("postgresql+psycopg2://postgres:postgres"
+              "@db:5432/test_db")
+    return {
+        'broker_url': 'memory://',
+        'result_backend': 'cache+memory://',
+        'db_url': db_url,
+        'worker_direct': True
+    }
+
+
+@pytest.fixture(scope='session')
+def celery_worker_parameters():
+    db_url = ("postgresql+psycopg2://postgres:postgres"
+              "@db:5432/test_db")
+    return {
+        'concurrency': 1,
+        'db_url': db_url,
+        'worker_direct': True
+    }
+
+
+@pytest.fixture(scope='session')
+def celery_worker_pool():
+    return 'solo'
+
+
+@pytest.fixture(scope='session')
+def celery_enable_logging():
+    return True
+
+
+@pytest.fixture(scope='session')
+def use_celery_app_trap():
+    return True
 
 
 @pytest.fixture(scope="session")
@@ -41,6 +82,15 @@ def session(db_engine: Engine) -> Generator[Session, None, None]:
         db.close()
         transaction.rollback()
         connection.close()
+
+
+@pytest.fixture(scope="function")
+def o_session() -> Generator[Session, None, None]:
+    try:
+        db = SessionLocal()
+        yield db
+    finally:
+        db.close()
 
 
 @pytest.fixture(scope="function")

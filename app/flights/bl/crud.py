@@ -11,6 +11,7 @@ from app.flights.models import Flight
 from app.flights.schemas import FlightIn
 from app.logging import logged
 
+
 logger = logging.getLogger(__name__)
 
 

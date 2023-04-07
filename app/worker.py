@@ -8,7 +8,8 @@ from celery.signals import after_setup_logger
 from app.config import settings
 from app.logging import BASE_DIR
 
-MODULES = ("app.flights", )
+MODULES = ("celery.contrib.testing.tasks",
+           "app.flights.tasks")
 
 celery = Celery(__name__)
 celery.conf.broker_url = settings.CELERY_BROKER_URL
@@ -29,7 +30,7 @@ celery.autodiscover_tasks(lambda: MODULES)
 
 celery.conf.beat_schedule = {
     "process-incoming-files": {
-        "task": "app.flights.tasks.process_incoming_flight_files",
+        "task": "flights:process_incoming_flight_files",
         "schedule": settings.TASK_PROCESS_INCOMING_FILES_SEC,
         "args": (str(Path(BASE_DIR) / "app/files/In"), )
     }
@@ -38,7 +39,7 @@ celery.conf.beat_schedule = {
 if settings.DEBUG:
     celery.conf.beat_schedule.update({
         "generate-file": {
-            "task": "app.flights.tasks.generate_file",
+            "task": "flights:generate_file",
             "schedule": settings.TASK_GENERATE_FILE_SEC,
             "args": (str(Path(BASE_DIR) / "app/files/"), )
         }

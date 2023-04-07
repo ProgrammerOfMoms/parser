@@ -2,20 +2,26 @@
 
 from datetime import date
 import json
+import logging
 import os
 import re
 import shutil
 from pathlib import Path
+import time
 from unittest.mock import MagicMock
 
 from pytest import MonkeyPatch, Session
+import pytest
 from sqlalchemy import select
 from app.flights.bl.helpers import get_flights_from_files
 from app.flights.models import Flight
 
-from app.flights.schemas import FILE_NAME_PATTERN
-from app.flights.tasks import generate_file, process_incoming_flight_files, save_flights_to_db, save_flights_to_json_files
+from app.flights.schemas import FILE_NAME_PATTERN, FlightFullIn
+from app.flights.tasks import do_something, generate_file, process_incoming_flight_files, save_flights_to_db, save_flights_to_json_files, wrapper
 from tests.helpers import BASE_DIR, generate_folders, wait_subtasks
+
+
+logger = logging.getLogger(__name__)
 
 
 class TestFileMove:
@@ -196,4 +202,20 @@ class TestFileDbSave:
         assert db_flight.flt == 1234
         assert db_flight.file_name == file_name
         assert db_flight.dep == "OK"
-        assert db_flight.depdate == date(2022, 10, 20)    
+        assert db_flight.depdate == date(2022, 10, 20)
+
+
+class TestCeleryll:
+    def test_wrapper_task(self,
+                          celery_session_worker,
+                          session):
+        print(id(celery_session_worker.app))
+        # r1 = do_something.delay()
+        result = wrapper.delay().get()
+        wait_subtasks(result)
+        # assert result.successful() is True
+
+        # Check that the flight is stored in the test database
+        db_flight = list(session.execute(select(Flight)).scalars())
+        logger.error("HERE")
+        assert len(db_flight) == 1
