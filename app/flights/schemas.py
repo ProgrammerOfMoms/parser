@@ -1,11 +1,14 @@
 from datetime import date, datetime
 import json
 import os
-from typing import TypeVar, Type
+from typing import TypeVar, Type, TypeAlias
 
 from pydantic import BaseModel, Field, validator
 from app.common.convertors import CsvToJsonConvertor
 from app.consts import DEFAULT_DATE_FORMAT
+
+
+DateType: TypeAlias = str | date
 
 T = TypeVar('T', bound="FlightFullIn")
 
@@ -27,10 +30,10 @@ class Passenger(BaseModel):
         if isinstance(bdate, date):
             return bdate
         try:
-            bdate = datetime.strptime(bdate.lower(), "%d%b%y")
+            new_bdate = datetime.strptime(bdate.lower(), "%d%b%y")
         except ValueError:
-            bdate = datetime.strptime(bdate, DEFAULT_DATE_FORMAT)
-        return bdate.date()
+            new_bdate = datetime.strptime(bdate, DEFAULT_DATE_FORMAT)
+        return new_bdate.date()
 
 
 class FlightBase(BaseModel):
@@ -60,17 +63,17 @@ class FlightIn(FlightBase):
         return file_name
 
     @validator("depdate", pre=True)
-    def validate_bdate(cls, depdate: str | date | None) -> date:
+    def validate_depdate(cls, depdate: DateType) -> date:
         """Валидация даты рождения"""
         if not isinstance(depdate, (str, date)):
             raise ValueError
         if isinstance(depdate, date):
             return depdate
         try:
-            depdate = datetime.strptime(depdate.lower(), "%Y%m%d")
+            new_depdate = datetime.strptime(depdate.lower(), "%Y%m%d")
         except ValueError:
-            depdate = datetime.strptime(depdate, DEFAULT_DATE_FORMAT)
-        return depdate.date()
+            new_depdate = datetime.strptime(depdate, DEFAULT_DATE_FORMAT)
+        return new_depdate.date()
 
     def to_json(self,
                 exclude: set[str] | None = None,
@@ -111,7 +114,7 @@ class FlightFullIn(FlightIn):
         date_str, flight_num, dep_name = file_name_wo_ext.split("_")
         convertor = CsvToJsonConvertor(csv_file_path)
         convertor.convert()
-        return FlightFullIn(
+        return cls(
             file_name=file_name,
             flt=flight_num,
             depdate=date_str,

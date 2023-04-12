@@ -2,8 +2,8 @@ import logging
 import os
 from pathlib import Path
 
-from celery import Celery
-from celery.signals import after_setup_logger
+from celery import Celery  # type: ignore
+from celery.signals import after_setup_logger  # type: ignore
 
 from app.config import settings
 from app.logging import BASE_DIR

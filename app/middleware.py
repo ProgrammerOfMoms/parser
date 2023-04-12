@@ -8,12 +8,9 @@ from fastapi import Request
 
 logger = logging.getLogger(__name__)
 
-MiddlewareType: TypeAlias = Callable[[Request, Callable | None],
-                                     Awaitable[Any]]
-
 
 async def log_requests(request: Request,
-                       call_next: MiddlewareType) -> Awaitable[Any]:
+                       call_next: Callable) -> Awaitable[Any]:
     """Промежуточный слой для логгирование запроса."""
     idem = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
     logger.info(f"REQUEST START rid={idem} "

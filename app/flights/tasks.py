@@ -2,9 +2,8 @@ import csv
 import os
 import random
 from pathlib import Path
-from typing import Any
 
-from celery import group
+from celery import group  # type: ignore
 
 from app.common.helpers import move_files_by_map
 from app.db import SessionLocal
@@ -72,7 +71,7 @@ def process_incoming_flight_files(folder: str) -> tuple[int, str | None]:
     """
     incoming_files = os.listdir(path=folder)
     if not incoming_files:
-        return 0
+        return 0, None
 
     root_folder = Path(folder).parent.absolute()
     in_folder = Path(folder)
