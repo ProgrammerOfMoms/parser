@@ -2,9 +2,10 @@ import logging
 import logging.config
 import os
 from functools import wraps
-from typing import Callable
+from typing import Any, Callable
 
 from app.config import settings
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -51,10 +52,10 @@ def setup_logger() -> None:
     logging.config.dictConfig(LOGGING)
 
 
-def logged(func) -> Callable:
+def logged(func: Callable) -> Callable:
     """Декоратор для логгирования входящих и исходящих данных метода"""
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: tuple, **kwargs: dict) -> Any:
         logger = logging.getLogger(func.__module__)
         logger.info(f"START METHOD {func.__name__} with args {args} and "
                     f"kwargs {kwargs}")

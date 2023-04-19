@@ -1,12 +1,11 @@
 """CRUD методы для работы с моделью авиаперелетов Flights"""
 import logging
-from datetime import date, datetime
+from datetime import date
 from typing import Sequence
 
-from sqlalchemy import Row, select, insert
+from sqlalchemy import select, insert
 from sqlalchemy.orm import Session
 
-from app.consts import DEFAULT_DATE_FORMAT
 from app.flights.models import Flight
 from app.flights.schemas import FlightIn
 from app.logging import logged
@@ -39,7 +38,8 @@ def get_flights(session: Session,
 
 
 @logged
-def create_flights_bulk(session: Session, flights: list[FlightIn]) -> None:
+def create_flights_bulk(session: Session,
+                        flights: Sequence[FlightIn]) -> None:
     flights_dict = [{**flight.dict(exclude={"prl"})}
                     for flight in flights]
     session.execute(insert(Flight), flights_dict)

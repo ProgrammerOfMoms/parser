@@ -2,8 +2,8 @@ import logging
 import os
 from pathlib import Path
 
-from celery import Celery  # type: ignore
-from celery.signals import after_setup_logger  # type: ignore
+from celery import Celery
+from celery.signals import after_setup_logger
 
 from app.config import settings
 from app.logging import BASE_DIR
@@ -16,7 +16,8 @@ celery.conf.result_backend = settings.CELERY_RESULT_BACKEND
 
 
 @after_setup_logger.connect
-def on_after_setup_logger(logger: logging.Logger, *args, **kwargs) -> None:
+def on_after_setup_logger(logger: logging.Logger,
+                          *args: tuple, **kwargs: dict) -> None:
     """Конфигурирем логгер Celery"""
     fmt = logging.Formatter("%(levelname)s %(asctime)s %(name)s %(message)s")
     fh = logging.FileHandler(os.path.join(BASE_DIR, 'logs/celery.log'))

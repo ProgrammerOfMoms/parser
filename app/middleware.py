@@ -2,7 +2,7 @@ import logging
 import random
 import string
 import time
-from typing import Any, Awaitable, Callable, TypeAlias
+from typing import Any, Awaitable, Callable
 
 from fastapi import Request
 

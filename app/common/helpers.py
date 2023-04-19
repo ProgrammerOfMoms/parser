@@ -1,7 +1,7 @@
 import os
 
 
-def get_file_name_with_ext(file_path) -> tuple[str, str]:
+def get_file_name_with_ext(file_path: str) -> tuple[str, str]:
     """
     Получить имя файла и его расширение.
     :param file_path: Путь до файла.

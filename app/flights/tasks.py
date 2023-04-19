@@ -3,7 +3,7 @@ import os
 import random
 from pathlib import Path
 
-from celery import group  # type: ignore
+from celery import group
 
 from app.common.helpers import move_files_by_map
 from app.db import SessionLocal

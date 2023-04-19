@@ -14,8 +14,9 @@ from app.flights.bl.helpers import get_flights_from_files
 from app.flights.models import Flight
 
 from app.flights.schemas import FILE_NAME_PATTERN
-from app.flights.tasks import generate_file, process_incoming_flight_files, save_flights_to_db, save_flights_to_json_files
-from tests.helpers import BASE_DIR, generate_folders, wait_subtasks
+from app.flights.tasks import generate_file, process_incoming_flight_files, save_flights_to_db, \
+    save_flights_to_json_files
+from tests.helpers import BASE_DIR, generate_folders
 
 
 class TestFileMove:
@@ -196,4 +197,4 @@ class TestFileDbSave:
         assert db_flight.flt == 1234
         assert db_flight.file_name == file_name
         assert db_flight.dep == "OK"
-        assert db_flight.depdate == date(2022, 10, 20)    
+        assert db_flight.depdate == date(2022, 10, 20)

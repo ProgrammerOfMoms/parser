@@ -18,7 +18,7 @@ FlightsFileMap: TypeAlias = tuple[list[FlightFullIn], dict[str, str]]
 logger = logging.getLogger(__name__)
 
 
-def generate_random_date(start_date: date, end_date: date | None = None):
+def generate_random_date(start_date: date, end_date: date | None = None) -> date:
     """Генерирует случайную дату в диапозоне от start_date до end_date"""
     if end_date is None:
         end_date = date.today()
