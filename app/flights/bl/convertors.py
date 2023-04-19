@@ -7,11 +7,6 @@ from app.consts import DEFAULT_DATE_FORMAT
 class CsvToJsonFlightConvertor(CsvToJsonConvertor):
     """Преобразователь из csv в JSON для файлов перелетов"""
 
-    def FuhjgkjhkjhkjhkjhkjhkjhkjhkjkjhkjhdkcjshlcdsiuchdslicuhdsliudcshliuhhkjlkjlkjlkjlkjlkjlkjlkjlkjlkjlkjlkjhjhgjhgjhgjhgjhgjhgjhgnFC(self) -> None:
-        """
-        """
-        return
-
     def _transform_row(self, row: dict) -> dict:
         """
         Преобразование строки.
