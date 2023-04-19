@@ -27,3 +27,8 @@ jobs:
         run: flake8 .
       - name: Run mypy
         run: mypy .
+      - name: Deploy project
+      - run: |
+          mv test_env .env
+          docker compose up -d --build
+          docker compose run parser pytest .
