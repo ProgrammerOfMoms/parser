@@ -20,4 +20,5 @@ jobs:
           password: ${{ secrets.REMOTE_PASSWORD }}
           port: ${{ secrets.REMOTE_PORT }}
           script: |
+            cd parser
             docker compose up -d --no-deps --build
