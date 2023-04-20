@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 build:
-  uses: ./test_code.yml
+  uses: ./.github/workflows/test_code.yml
 
 deploy:
   runs-on: ubuntu-latest
