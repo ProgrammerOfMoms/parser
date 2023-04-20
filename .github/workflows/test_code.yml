@@ -1,0 +1,15 @@
+jobs:
+  test-code:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy project
+        run: |
+          mv test_env .env
+          docker compose up -d --build
+      - name: Run flake8
+        run: docker compose run parser flake8 .
+      - name: Run mypy
+        run: docker compose run parser mypy .
+      - name: Run pytests
+        run: docker compose run parser pytest .
