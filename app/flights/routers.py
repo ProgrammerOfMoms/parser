@@ -24,3 +24,8 @@ def create_flights(flight: FlightIn,
     new_flight = crud.create_flight(session, flight)
     session.commit()
     return new_flight
+
+
+@router.get("/ping")
+def ping() -> str:
+    return "pong"

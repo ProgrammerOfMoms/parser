@@ -21,4 +21,5 @@ jobs:
           port: ${{ secrets.REMOTE_PORT }}
           script: |
             cd parser
+            git pull
             docker compose up -d --no-deps --build
