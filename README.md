@@ -64,4 +64,4 @@ docker compose exec parser pytest
 
 Если DEBUG = False (по умолчанию), то поднимается только задача обработки входящих файлов раз в TASK_PROCESS_INCOMING_FILES_SEC секунд.
 
-![Build Status](https://github.com/ProgrammerOfMoms/parser/actions/workflows/checks.yml/badge.svg?branch=main)
+[![Build Status](https://github.com/ProgrammerOfMoms/parser/actions/workflows/checks.yml/badge.svg?branch=main)](https://github.com/ProgrammerOfMoms/parser/actions/workflows/checks.yml)
