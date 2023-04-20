@@ -63,3 +63,5 @@ docker compose exec parser pytest
 При состоянии переменной окружения DEBUG = True, поднимается дополнительная задача в Celery, которая раз в TASK_GENERATE_FILE_SEC генерирует новый входящий файл.
 
 Если DEBUG = False (по умолчанию), то поднимается только задача обработки входящих файлов раз в TASK_PROCESS_INCOMING_FILES_SEC секунд.
+
+![Build Status](https://github.com/ProgrammerOfMoms/parser/actions/workflows/checks.yml/badge.svg?branch=main)
