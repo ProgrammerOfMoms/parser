@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/ProgrammerOfMoms/parser/actions/workflows/checks.yml/badge.svg?branch=main)](https://github.com/ProgrammerOfMoms/parser/actions/workflows/checks.yml)
+[![Build Status](https://github.com/ProgrammerOfMoms/parser/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/ProgrammerOfMoms/parser/actions/workflows/checks.yml)
 
 # Описание задания
 
